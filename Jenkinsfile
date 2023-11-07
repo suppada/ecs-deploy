@@ -18,7 +18,7 @@ pipeline {
         ECR_REPO_NAME = "${params.NAME}"
         VERSION = "${BUILD_NUMBER}-${env.GIT_COMMIT}"
         IMAGE_TAG = "${VERSION}"
-        TAG = "latest"
+        TAG = 'latest'
         REPOSITORY_URI = "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO_NAME}"
     }
     stages{
