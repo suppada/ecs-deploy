@@ -18,9 +18,9 @@ pipeline {
         ECR_REPO_NAME = "${params.NAME}"
         VERSION = "${BUILD_NUMBER}-${env.GIT_COMMIT}"
         IMAGE_TAG = "${VERSION}"
-        TAG = "latest"
+        TAG = 'latest'
         REPOSITORY_URI = "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO_NAME}"
-        PATH = "/opt/homebrew/Cellar/awscli/2.13.32/bin/aws"
+        PATH = '/opt/homebrew/Cellar/awscli/2.13.32/bin/aws'
     }
     stages{
         stage('Build'){
