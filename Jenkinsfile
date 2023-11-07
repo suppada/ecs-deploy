@@ -29,7 +29,7 @@ pipeline {
         stage('Git Checkout') {
             steps {
                 echo 'git pull'
-                checkout([$class: 'GitSCM', branches: [[name: '${params.Branch}']], credentialsId: '9fe95b1f-883e-4166-9743-a57c84d7ca17', extensions: [], userRemoteConfigs: [[url: 'https://github.com/suppada/ecs-deploy.git']]])
+                git branch: '${params.Branch}', credentialsId: '9fe95b1f-883e-4166-9743-a57c84d7ca17', url: 'https://github.com/suppada/ecs-deploy.git'
             }
         }
         stage('Maven Build'){
