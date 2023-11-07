@@ -25,8 +25,10 @@ pipeline {
     stages{
         stage('Build'){
             steps{
-                 sh 'mvn clean compile install package'
-                 archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
+                sh '''
+                    mvn clean compile install package
+                '''
+                archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
             }
             post {
                 always {
