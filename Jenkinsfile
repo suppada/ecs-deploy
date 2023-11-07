@@ -36,14 +36,10 @@ pipeline {
         stage('Push image to ECR') {
             steps {
                 sh '''
-                    try {
-                        /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
-                        docker build -t $ECR_REPO_NAME .
-                        docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$VERSION
-                        docker push $REPOSITORY_URI:$VERSION
-                    } catch (error) {
-                        println "Error happened, continuing"
-                    }    
+                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
+                    docker build -t $ECR_REPO_NAME .
+                    docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$VERSION
+                    docker push $REPOSITORY_URI:$VERSION
                 '''
             }
         }
