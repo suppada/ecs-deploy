@@ -6,23 +6,25 @@ pipeline {
         
     }
     environment {
-        registry = '123432287013.dkr.ecr.us-east-1.amazonaws.com/navi-dracs-test'
-        imageTag = 'latest'
-        ecrRepoName = 'navi-dracs-test'
+        ACCOUNT_ID = "123432287013"
+        REGION = "us-east-1"
+        IMAGE_TAG = 'latest'
+        ECR_REPO_NAME = 'navi-dracs-test'
+        REPOSITORY_URI = "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO_NAME}"
     }
     stages{
-        stage('gitcheckout') {
-            steps {
-                echo 'git pull'
-                checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/suppada/ecs-deploy.git']]])
-            }
-        }
+        // stage('gitcheckout') {
+        //     steps {
+        //         echo 'git pull'
+        //         checkout([$class: 'GitSCM', branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/suppada/ecs-deploy.git']]])
+        //     }
+        // }
         stage('Push image to ECR') {
             steps {
                 sh '''
-                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $registry
-                    docker tag "$ecrRepoName:$imageTag" "$registry:$imageTag"
-                    docker push "$registry:$imageTag"
+                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
+                    docker tag $ECR_REPO_NAME:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
+                    docker push $REPOSITORY_URI:$imageTag
                 '''
             }
         }
