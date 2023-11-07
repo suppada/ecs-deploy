@@ -1,3 +1,3 @@
-FROM fedora:latest
-RUN dnf -y update && dnf -y install httpd
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+FROM tomcat:8
+# Take the war and copy to webapps of tomcat
+COPY target/*.war /usr/local/tomcat/webapps/dockeransible.war

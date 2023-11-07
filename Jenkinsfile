@@ -1,9 +1,9 @@
 pipeline {
     agent any
     options {
-        buildDiscarder(logRotator(daysToKeepStr: '1', numToKeepStr: '3'))
-        disableConcurrentBuilds()
-        
+        timestamps()
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '4', artifactNumToKeepStr: '3', daysToKeepStr: '3', numToKeepStr: '3'))
+        timeout(time: 1, unit: 'MINUTES')
     }
     environment {
         ACCOUNT_ID = "123432287013"
@@ -15,6 +15,18 @@ pipeline {
         REPOSITORY_URI = "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO_NAME}"
     }
     stages{
+        stage('Build'){
+            steps{
+                 sh 'mvn clean compile install package'
+                 archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
+            }
+            post {
+                always {
+                    echo 'Test run completed'
+                    junit allowEmptyResults: true, testResults: '**/target/*.xml'
+                }
+            }
+        }
         stage('Push image to ECR') {
             steps {
                 sh '''
