@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    parameters {
+        string(name: 'ecr repo', defaultValue: 'navi-dracs-test', description: 'Ecr Repository Name')
+    }
     options {
         timestamps()
         buildDiscarder(logRotator(artifactDaysToKeepStr: '4', artifactNumToKeepStr: '3', daysToKeepStr: '3', numToKeepStr: '3'))
@@ -11,7 +14,7 @@ pipeline {
     environment {
         ACCOUNT_ID = "123432287013"
         REGION = "us-east-1"
-        ECR_REPO_NAME = 'navi-dracs-test'
+        ECR_REPO_NAME = "${name}"
         VERSION = "${BUILD_NUMBER}-${env.GIT_COMMIT}"
         IMAGE_TAG = "${VERSION}"
         TAG = 'latest'
@@ -33,10 +36,14 @@ pipeline {
         stage('Push image to ECR') {
             steps {
                 sh '''
-                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
-                    docker build -t $ECR_REPO_NAME .
-                    docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$VERSION
-                    docker push $REPOSITORY_URI:$VERSION
+                    try {
+                        /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
+                        docker build -t $ECR_REPO_NAME .
+                        docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$VERSION
+                        docker push $REPOSITORY_URI:$VERSION
+                    } catch (error) {
+                        println "Error happened, continuing"
+                    }    
                 '''
             }
         }
