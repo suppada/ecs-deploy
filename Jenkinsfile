@@ -2,6 +2,7 @@ pipeline {
     agent any
     parameters {
         string(name: 'NAME', defaultValue: 'navi-dracs-test', description: 'Ecr Repository Name')
+        choice(name: 'AWS_ACCOUNT', choices: ['123432287013', '123432287023',], description: 'AWS Account')
     }
     options {
         timestamps()
@@ -12,7 +13,7 @@ pipeline {
       maven 'maven3'
     }
     environment {
-        ACCOUNT_ID = "123432287013"
+        ACCOUNT_ID = "${params.AWS_ACCOUNT}"
         REGION = "us-east-1"
         ECR_REPO_NAME = "${params.NAME}"
         VERSION = "${BUILD_NUMBER}-${env.GIT_COMMIT}"
