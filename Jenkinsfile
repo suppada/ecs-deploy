@@ -19,7 +19,7 @@ pipeline {
             steps {
                 sh '''
                     /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
-                    docker build -t ${NAME} .
+                    docker build -t $ECR_REPO_NAME .
                     docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$IMAGE_TAG
                     docker push $REPOSITORY_URI:$IMAGE_TAG
                 '''
