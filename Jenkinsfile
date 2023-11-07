@@ -14,7 +14,7 @@ pipeline {
     environment {
         ACCOUNT_ID = "123432287013"
         REGION = "us-east-1"
-        ECR_REPO_NAME = "${name}"
+        ECR_REPO_NAME = "${params.name}"
         VERSION = "${BUILD_NUMBER}-${env.GIT_COMMIT}"
         IMAGE_TAG = "${VERSION}"
         TAG = 'latest'
