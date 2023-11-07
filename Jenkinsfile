@@ -1,11 +1,11 @@
-if (env.BRANCH_NAME == "${params.Branch}") {
+if (env.BRANCH_NAME == "${params.BRANCH}") {
     env.AWS_ACCOUNT = "${params.AWS_ACCOUNT}"
 }
 pipeline {
     agent any
     parameters {
         string(name: 'NAME', defaultValue: 'navi-dracs-test', description: 'Ecr Repository Name')
-        string(name: 'Branch', defaultValue: 'develop', description: 'Git Branch Name')
+        string(name: 'BRANCH', defaultValue: 'main', description: 'Git Branch Name')
         choice(name: 'AWS_ACCOUNT', choices: ['123432287013', '123432287023',], description: 'AWS Account')
     }
     options {
@@ -29,7 +29,7 @@ pipeline {
         stage('Git Checkout') {
             steps {
                 echo 'git pull'
-                checkout([$class: 'GitSCM', branches: [[name: '${params.Branch}']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/suppada/ecs-deploy.git']]])
+                checkout([$class: 'GitSCM', branches: [[name: '${params.Branch}']], credentialsId: 'github', extensions: [], userRemoteConfigs: [[url: 'https://github.com/suppada/ecs-deploy.git']]])
             }
         }
         stage('Maven Build'){
