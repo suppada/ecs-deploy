@@ -18,8 +18,9 @@ pipeline {
         ECR_REPO_NAME = "${params.NAME}"
         VERSION = "${BUILD_NUMBER}-${env.GIT_COMMIT}"
         IMAGE_TAG = "${VERSION}"
-        TAG = 'latest'
+        TAG = "latest"
         REPOSITORY_URI = "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO_NAME}"
+        PATH = "/opt/homebrew/Cellar/awscli/2.13.32/bin/aws"
     }
     stages{
         stage('Build'){
@@ -37,12 +38,25 @@ pipeline {
         stage('Push image to ECR') {
             steps {
                 sh '''
-                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
+                    $PATH ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
                     docker build -t $ECR_REPO_NAME .
                     docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$VERSION
                     docker push $REPOSITORY_URI:$VERSION
                 '''
             }
+        }
+        // stage('Deploy to ECS') {
+        //     steps {
+        //         sh 'aws ecs update-service --cluster to-do-app --desired-count 1 --service to-do-app-service --task-definition to-do-app --force-new-deployment'
+        //     }
+        // }
+    }
+    post {
+        always {
+            echo 'Deleting all local images'
+            sh '''
+                docker image prune -af
+            '''
         }
     }
 }
