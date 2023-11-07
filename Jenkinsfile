@@ -1,4 +1,4 @@
-if (env.BRANCH_NAME == "${params.Branch}"){
+if (env.BRANCH_NAME == "${params.Branch}") {
     env.AWS_ACCOUNT = "${params.AWS_ACCOUNT}"
 }
 pipeline {
@@ -26,6 +26,12 @@ pipeline {
         REPOSITORY_URI = "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO_NAME}"
     }
     stages{
+        stage('Git Checkout') {
+            steps {
+                echo 'git pull'
+                checkout([$class: 'GitSCM', branches: [[name: '${params.Branch}']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/suppada/ecs-deploy.git']]])
+            }
+        }
         stage('Maven Build'){
             steps{
                 sh 'mvn clean compile install package'
@@ -44,7 +50,6 @@ pipeline {
                     /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
                     docker build -t $ECR_REPO_NAME .
                     docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$VERSION
-                    docker push $REPOSITORY_URI:$VERSION
                 '''
             }
         }
