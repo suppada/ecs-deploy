@@ -23,13 +23,14 @@ pipeline {
         VERSION = "${BUILD_NUMBER}-${env.GIT_COMMIT}"
         IMAGE_TAG = "${VERSION}"
         TAG = "latest"
+        BRANCH = "${params.BRANCH}"
         REPOSITORY_URI = "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO_NAME}"
     }
     stages{
         stage('Git Checkout') {
             steps {
                 echo 'git pull'
-                git branch: '${params.BRANCH}', credentialsId: '9fe95b1f-883e-4166-9743-a57c84d7ca17', url: 'https://github.com/suppada/ecs-deploy.git'
+                git branch: '$BRANCH', credentialsId: '9fe95b1f-883e-4166-9743-a57c84d7ca17', url: 'https://github.com/suppada/ecs-deploy.git'
             }
         }
         stage('Maven Build'){
