@@ -24,8 +24,8 @@ pipeline {
     stages{
         stage('Build'){
             steps{
-                 sh 'mvn clean compile install package'
-                 archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
+                sh 'mvn clean compile install package'
+                archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
             }
             post {
                 always {
@@ -34,12 +34,20 @@ pipeline {
                 }
             }
         }
-        stage('Push image to ECR') {
+        stage('Docker Build') {
             steps {
                 sh '''
                     /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
                     docker build -t $ECR_REPO_NAME .
                     docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$VERSION
+                    docker push $REPOSITORY_URI:$VERSION
+                '''
+            }
+        }
+        stage('Docker Image Push To ECR') {
+            steps {
+                sh '''
+                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
                     docker push $REPOSITORY_URI:$VERSION
                 '''
             }
