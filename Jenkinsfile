@@ -1,4 +1,4 @@
-if (env.BRANCH_NAME == 'main'){
+if (env.BRANCH_NAME == 'develop'){
     env.AWS_ACCOUNT = '123432287013'
 }
 pipeline {
