@@ -11,6 +11,7 @@ pipeline {
         ECR_REPO_NAME = 'navi-dracs-test'
         VERSION = "${env.BUILD_ID}-${env.GIT_COMMIT}"
         IMAGE_TAG = "${VERSION}"
+        TAG = 'latest'
         REPOSITORY_URI = "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO_NAME}"
     }
     stages{
@@ -18,7 +19,7 @@ pipeline {
             steps {
                 sh '''
                     /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
-                    docker tag $ECR_REPO_NAME:$IMAGE_TAG $REPOSITORY_URI:$IMAGE_TAG
+                    docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$IMAGE_TAG
                     docker push $REPOSITORY_URI:$IMAGE_TAG
                 '''
             }
