@@ -1,3 +1,6 @@
+if (env.BRANCH_NAME == 'main'){
+    env.AWS_ACCOUNT = '123432287013'
+}
 pipeline {
     agent any
     parameters {
