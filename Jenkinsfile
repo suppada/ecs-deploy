@@ -3,7 +3,7 @@ pipeline {
     options {
         timestamps()
         buildDiscarder(logRotator(artifactDaysToKeepStr: '4', artifactNumToKeepStr: '3', daysToKeepStr: '3', numToKeepStr: '3'))
-        timeout(time: 1, unit: 'MINUTES')
+        timeout(time: 3, unit: 'MINUTES')
     }
     tools {
       maven 'maven3'
