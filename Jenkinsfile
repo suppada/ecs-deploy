@@ -1,10 +1,11 @@
-if (env.BRANCH_NAME == 'develop'){
+if (env.BRANCH_NAME == "${params.Branch}"){
     env.AWS_ACCOUNT = '123432287013'
 }
 pipeline {
     agent any
     parameters {
         string(name: 'NAME', defaultValue: 'navi-dracs-test', description: 'Ecr Repository Name')
+        string(name: 'Branch', defaultValue: 'develop', description: 'Git Branch Name')
         choice(name: 'AWS_ACCOUNT', choices: ['123432287013', '123432287023',], description: 'AWS Account')
     }
     options {
@@ -50,7 +51,6 @@ pipeline {
         stage('Docker Image Push To ECR') {
             steps {
                 sh '''
-                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI
                     docker push $REPOSITORY_URI:$VERSION
                 '''
             }
