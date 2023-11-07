@@ -1,7 +1,7 @@
 pipeline {
     agent any
     parameters {
-        string(name: 'ecr repo', defaultValue: 'navi-dracs-test', description: 'Ecr Repository Name')
+        string(name: 'NAME', defaultValue: 'navi-dracs-test', description: 'Ecr Repository Name')
     }
     options {
         timestamps()
@@ -14,7 +14,7 @@ pipeline {
     environment {
         ACCOUNT_ID = "123432287013"
         REGION = "us-east-1"
-        ECR_REPO_NAME = "${params.name}"
+        ECR_REPO_NAME = "${params.NAME}"
         VERSION = "${BUILD_NUMBER}-${env.GIT_COMMIT}"
         IMAGE_TAG = "${VERSION}"
         TAG = 'latest'
