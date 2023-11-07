@@ -6,7 +6,7 @@ pipeline {
     parameters {
         string(name: 'NAME', defaultValue: 'navi-dracs-test', description: 'Ecr Repository Name')
         string(name: 'BRANCH', defaultValue: 'main', description: 'Git Branch Name')
-        choice(name: 'AWS_ACCOUNT', choices: ['123432287013', '123432287023',], description: 'AWS Account')
+        choice(name: 'AWS_ACCOUNT', choices: ['123432287013', '123432287023',], description: 'AWS Account ID')
     }
     options {
         timestamps()
