@@ -22,7 +22,7 @@ pipeline {
         REPOSITORY_URI = "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO_NAME}"
     }
     stages{
-        stage('Build'){
+        stage('Maven Build'){
             steps{
                 sh 'mvn clean compile install package'
                 archiveArtifacts artifacts: 'target/*.war', onlyIfSuccessful: true
