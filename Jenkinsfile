@@ -5,6 +5,9 @@ pipeline {
         buildDiscarder(logRotator(artifactDaysToKeepStr: '4', artifactNumToKeepStr: '3', daysToKeepStr: '3', numToKeepStr: '3'))
         timeout(time: 1, unit: 'MINUTES')
     }
+    tools {
+      maven 'maven3'
+    }
     environment {
         ACCOUNT_ID = "123432287013"
         REGION = "us-east-1"
