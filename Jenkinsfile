@@ -1,5 +1,5 @@
 if (env.BRANCH_NAME == "${env.BRANCH}") {
-    env.AWS_ACCOUNT = "${params.AWS_ACCOUNT}"
+    env.AWS_ACCOUNT = "${env.ACCOUNT_ID}"
 }
 pipeline {
     agent any
