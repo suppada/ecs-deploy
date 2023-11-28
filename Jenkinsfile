@@ -7,6 +7,7 @@ pipeline {
         string(name: 'NAME', defaultValue: 'navi-dracs-test', description: 'Ecr Repository Name')
         string(name: 'BRANCH', defaultValue: 'main', description: 'Git Branch Name')
         choice(name: 'AWS_ACCOUNT', choices: ['123432287013', '123432287023',], description: 'AWS Account ID')
+        string(name: 'CLUSTER', defaultValue: 'dracs-test-dev-cluster', description: 'ECS Cluster Name')
     }
     options {
         timestamps()
@@ -25,6 +26,7 @@ pipeline {
         TAG = "latest"
         BRANCH = "${params.BRANCH}"
         REPOSITORY_URI = "${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ECR_REPO_NAME}"
+        ECS_CLUSTER = "${params.CLUSTER}"
     }
     stages{
         stage('Git Checkout') {
@@ -63,7 +65,13 @@ pipeline {
         }
         stage('Deploy to ECS') {
             steps {
-                sh '/opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecs update-service --cluster dracs-test-dev-cluster --desired-count 1 --service hello-world-app:2 --task-definition hello-world-app --force-new-deployment'
+                sh '''
+                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecs update-service --cluster $ECS_CLUSTER \
+                                                                                   --desired-count 1 \
+                                                                                   --service hello-world-app:2 
+                                                                                   --task-definition hello-world-app 
+                                                                                   --force-new-deployment
+                '''
             }
         }
     }
