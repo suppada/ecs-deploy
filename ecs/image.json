@@ -1,15 +1,16 @@
-[
-  {
-    "image": "registry.gitlab.com/architect-io/artifacts/nodejs-hello-world:latest",
-    "cpu": 1024,
-    "memory": 2048,
-    "name": "hello-world-app",
-    "networkMode": "awsvpc",
-    "portMappings": [
+{
+  "containerDefinitions": [
       {
-        "containerPort": 80,
-        "hostPort": 80
+          "name": "sleep",
+          "image": "busybox",
+          "cpu": 10,
+          "command": [
+              "sleep",
+              "360"
+          ],
+          "memory": 10,
+          "essential": true
       }
-    ]
-  }
-]
+  ],
+  "family": "sleep360"
+}
