@@ -50,7 +50,7 @@ pipeline {
         stage('Docker Build') {
             steps {
                 sh '''
-                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $REPOSITORY_URI 
+                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecr get-login-password --region $REGION | docker login --username AWS --password-stdin $REPOSITORY_URI 
                     docker build -t $ECR_REPO_NAME .
                     docker tag $ECR_REPO_NAME:$TAG $REPOSITORY_URI:$VERSION
                 '''
@@ -66,7 +66,7 @@ pipeline {
         stage('Deploy to ECS') {
             steps {
                 sh '''
-                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecs register-task-definition --region $REGION --family hello-world-app1 --requires-compatibilities FARGATE --network-mode awsvpc --cpu 1024 --memory 2048 --container-definitions file:///ecs/container-definition-update-image.json"
+                    /opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecs register-task-definition --cli-input-json "file://ecs/image.json"
                 '''
             }
         }
