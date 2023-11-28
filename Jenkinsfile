@@ -63,7 +63,7 @@ pipeline {
         }
         stage('Deploy to ECS') {
             steps {
-                sh '/opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecs update-service --cluster $ECR_REPO_NAME --desired-count 1 --service to-do-app-service --task-definition to-do-app --force-new-deployment'
+                sh '/opt/homebrew/Cellar/awscli/2.13.32/bin/aws ecs update-service --cluster dracs-test-dev-cluster --desired-count 1 --service to-do-app-service --task-definition to-do-app --force-new-deployment'
             }
         }
     }
